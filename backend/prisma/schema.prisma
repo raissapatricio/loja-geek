@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  PLACED
+  PAYMENT_APPROVED
+  PREPARING
+  SHIPPED
+  IN_TRANSIT
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REFUNDED
+}
+
+model User {
+  id           String   @id @default(cuid()) @map("id")
+  name         String   @map("nome")
+  cpf          String   @unique @map("cpf")
+  email        String   @unique @map("email")
+  phone        String   @map("telefone")
+  passwordHash String   @map("senha_hash")
+  role         Role     @default(USER) @map("perfil")
+  active       Boolean  @default(true) @map("ativo")
+  createdAt    DateTime @default(now()) @map("criado_em")
+  updatedAt    DateTime @updatedAt @map("atualizado_em")
+
+  address Address?
+  orders  Order[]
+
+  @@map("usuarios")
+}
+
+model Address {
+  id           String   @id @default(cuid()) @map("id")
+  userId       String   @unique @map("usuario_id")
+  cep          String   @map("cep")
+  street       String   @map("logradouro")
+  number       String   @map("numero")
+  complement   String?  @map("complemento")
+  neighborhood String   @map("bairro")
+  city         String   @map("cidade")
+  state        String   @map("estado")
+  createdAt    DateTime @default(now()) @map("criado_em")
+  updatedAt    DateTime @updatedAt @map("atualizado_em")
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@map("enderecos")
+}
+
+model Product {
+  id          String   @id @default(cuid()) @map("id")
+  name        String   @map("nome")
+  description String   @map("descricao")
+  imageUrl    String   @map("url_imagem")
+  category    String   @map("categoria")
+  price       Decimal  @db.Decimal(10, 2) @map("preco")
+  stock       Int      @default(0) @map("estoque")
+  active      Boolean  @default(true) @map("ativo")
+  createdAt   DateTime @default(now()) @map("criado_em")
+  updatedAt   DateTime @updatedAt @map("atualizado_em")
+
+  orderItems OrderItem[]
+
+  @@map("produtos")
+}
+
+model Order {
+  id            String        @id @default(cuid()) @map("id")
+  userId        String        @map("usuario_id")
+  addressId     String        @map("endereco_id")
+  subtotal      Decimal       @db.Decimal(10, 2) @map("subtotal")
+  shipping      Decimal       @db.Decimal(10, 2) @map("frete")
+  total         Decimal       @db.Decimal(10, 2) @map("total")
+  paymentStatus PaymentStatus @default(PENDING) @map("status_pagamento")
+  orderStatus   OrderStatus   @default(PLACED) @map("status_pedido")
+  trackingCode  String?       @unique @map("codigo_rastreio")
+  notes         String?       @map("observacoes")
+  createdAt     DateTime      @default(now()) @map("criado_em")
+  updatedAt     DateTime      @updatedAt @map("atualizado_em")
+
+  user     User        @relation(fields: [userId], references: [id])
+  address  Address     @relation(fields: [addressId], references: [id])
+  items    OrderItem[]
+  cardInfo CardInfo?
+  delivery Delivery?
+
+  @@map("pedidos")
+}
+
+model OrderItem {
+  id        String  @id @default(cuid()) @map("id")
+  orderId   String  @map("pedido_id")
+  productId String  @map("produto_id")
+  quantity  Int     @map("quantidade")
+  unitPrice Decimal @db.Decimal(10, 2) @map("preco_unitario")
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("itens_pedido")
+}
+
+// Armazena APENAS dados não sensíveis do cartão
+// Nunca armazena CVV ou número completo
+model CardInfo {
+  id          String @id @default(cuid()) @map("id")
+  orderId     String @unique @map("pedido_id")
+  brand       String @map("bandeira")
+  lastFour    String @map("ultimos_quatro_digitos")
+  expiryMonth String @map("mes_validade")
+  expiryYear  String @map("ano_validade")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("informacoes_cartao")
+}
+
+model Delivery {
+  id           String      @id @default(cuid()) @map("id")
+  orderId      String      @unique @map("pedido_id")
+  status       OrderStatus @default(PLACED) @map("status")
+  trackingCode String?     @map("codigo_rastreio")
+  estimatedAt  DateTime?   @map("previsao_entrega")
+  deliveredAt  DateTime?   @map("entregue_em")
+  createdAt    DateTime    @default(now()) @map("criado_em")
+  updatedAt    DateTime    @updatedAt @map("atualizado_em")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("entregas")
+}
