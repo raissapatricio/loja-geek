@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Eye, EyeOff, Shield, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const schema = z.object({
@@ -47,11 +47,10 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-3">
-            <Shield className="w-8 h-8 text-indigo-600" />
-            <span className="text-2xl font-bold text-indigo-600">SecureCommerce</span>
+            <span className="text-2xl font-black text-slate-900 tracking-wider">Manga<span className="text-pink-600">Verse</span></span>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Entrar na sua conta</h1>
-          <p className="text-gray-500 mt-1 text-sm">Ambiente acadêmico de simulação</p>
+          <p className="text-gray-500 mt-1 text-sm">Acesse sua conta para conferir pedidos e lançamentos</p>
         </div>
 
         <div className="card">

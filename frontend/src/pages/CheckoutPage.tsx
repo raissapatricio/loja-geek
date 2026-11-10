@@ -95,17 +95,7 @@ export default function CheckoutPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Finalizar Compra</h1>
-
-      {/* Banner acadêmico */}
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 flex items-start gap-2">
-        <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-        <div className="text-sm text-amber-800">
-          <strong>Ambiente Acadêmico de Simulação</strong> — Nenhuma cobrança real é realizada.
-          Use dados de cartão fictícios. CVV nunca é armazenado.
-          Cartões terminados em <strong>0000</strong> simulam pagamento recusado.
-        </div>
-      </div>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">Finalizar Compra</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Formulário de pagamento */}
@@ -113,7 +103,7 @@ export default function CheckoutPage() {
           <div className="card">
             <div className="flex items-center gap-2 mb-5">
               <CreditCard className="w-5 h-5 text-indigo-600" />
-              <h2 className="text-lg font-bold text-gray-900">Dados do Cartão (Fictício)</h2>
+              <h2 className="text-lg font-bold text-gray-900">Dados do Cartão</h2>
             </div>
 
             <div className="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-lg mb-4 text-sm text-green-800">
@@ -157,7 +147,7 @@ export default function CheckoutPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Número do cartão <span className="text-xs text-gray-400">(fictício, 16 dígitos)</span>
+                  Número do cartão <span className="text-xs text-gray-400">(16 dígitos)</span>
                 </label>
                 <input
                   type="text"

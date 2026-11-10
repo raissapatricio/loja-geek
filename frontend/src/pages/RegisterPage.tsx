@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Shield, AlertCircle, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, CheckCircle } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import toast from 'react-hot-toast';
@@ -163,11 +163,10 @@ export default function RegisterPage() {
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-2 mb-3">
-            <Shield className="w-8 h-8 text-indigo-600" />
-            <span className="text-2xl font-bold text-indigo-600">SecureCommerce</span>
+            <span className="text-2xl font-black text-slate-900 tracking-wider">Manga<span className="text-pink-600">Verse</span></span>
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Criar conta</h1>
-          <p className="text-sm text-gray-500 mt-1">🔒 Dados fictícios — ambiente acadêmico</p>
+          <p className="text-sm text-gray-500 mt-1">Cadastre-se para aproveitar ofertas exclusivas e frete especial</p>
         </div>
 
         <div className="card">

@@ -142,11 +142,11 @@ export default function ProductDetailPage() {
               </div>
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span>Compra Segura com OWASP</span>
+                <span>Compra 100% Protegida</span>
               </div>
               <div className="flex items-center gap-2">
                 <RefreshCw className="w-4 h-4 text-blue-500 shrink-0" />
-                <span>Simulação Acadêmica</span>
+                <span>Garantia de 30 Dias</span>
               </div>
             </div>
           </div>
