@@ -61,3 +61,48 @@ export const toggleUserStatus = async (req: AuthenticatedRequest, res: Response)
     throw error;
   }
 };
+
+// ADMIN: DELETE /api/admin/users/:id
+export const deleteUser = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    const id = String(req.params.id);
+
+    // Impede que o admin exclua a própria conta
+    if (id === req.user!.id) {
+      res.status(400).json({ error: 'Você não pode excluir sua própria conta.' });
+      return;
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: { orders: { select: { id: true } } },
+    });
+
+    if (!user) {
+      res.status(404).json({ error: 'Usuário não encontrado.' });
+      return;
+    }
+
+    // Exclui em transação para garantir integridade caso o usuário tenha pedidos e endereço vinculados
+    await prisma.$transaction(async (tx) => {
+      // Deleta pedidos do usuário (itens_pedido, informacoes_cartao e entregas possuem onDelete: Cascade em relação ao Order)
+      await tx.order.deleteMany({
+        where: { userId: id },
+      });
+
+      // Deleta endereço (Address possui onDelete: Cascade no User, mas por segurança garantimos)
+      await tx.address.deleteMany({
+        where: { userId: id },
+      });
+
+      // Deleta o usuário
+      await tx.user.delete({
+        where: { id },
+      });
+    });
+
+    res.json({ message: 'Usuário excluído com sucesso.' });
+  } catch (error) {
+    throw error;
+  }
+};

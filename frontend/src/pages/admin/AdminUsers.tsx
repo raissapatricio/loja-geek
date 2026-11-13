@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../services/api';
-import { Users, UserCheck, UserX } from 'lucide-react';
+import { Users, UserCheck, UserX, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface UserAdmin {
@@ -19,6 +19,7 @@ export default function AdminUsers() {
   const [users, setUsers] = useState<UserAdmin[]>([]);
   const [loading, setLoading] = useState(true);
   const [toggling, setToggling] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
     api.get('/admin/users').then(({ data }) => setUsers(data)).finally(() => setLoading(false));
@@ -37,6 +38,28 @@ export default function AdminUsers() {
       toast.error(msg);
     } finally {
       setToggling(null);
+    }
+  };
+
+  const deleteUser = async (user: UserAdmin) => {
+    const confirmMsg = user._count.orders > 0
+      ? `Atenção: O usuário "${user.name}" possui ${user._count.orders} pedido(s) associado(s). Tem certeza que deseja excluí-lo definitivamente?`
+      : `Deseja realmente excluir o usuário "${user.name}"?`;
+
+    if (!window.confirm(confirmMsg)) {
+      return;
+    }
+
+    setDeleting(user.id);
+    try {
+      await api.delete(`/admin/users/${user.id}`);
+      setUsers((prev) => prev.filter((u) => u.id !== user.id));
+      toast.success('Usuário excluído com sucesso!');
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Erro ao excluir usuário.';
+      toast.error(msg);
+    } finally {
+      setDeleting(null);
     }
   };
 
@@ -63,7 +86,7 @@ export default function AdminUsers() {
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Perfil</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Pedidos</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-600">Status</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Ação</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600">Ações</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -84,18 +107,30 @@ export default function AdminUsers() {
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <button
-                      onClick={() => toggleUser(user.id)}
-                      disabled={toggling === user.id}
-                      className={`flex items-center gap-1 text-xs px-2 py-1 rounded border transition-colors ${
-                        user.active
-                          ? 'border-red-300 text-red-600 hover:bg-red-50'
-                          : 'border-green-300 text-green-600 hover:bg-green-50'
-                      }`}
-                    >
-                      {user.active ? <UserX className="w-3 h-3" /> : <UserCheck className="w-3 h-3" />}
-                      {user.active ? 'Desativar' : 'Ativar'}
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => toggleUser(user.id)}
+                        disabled={toggling === user.id || deleting === user.id}
+                        className={`flex items-center gap-1 text-xs px-2 py-1 rounded border transition-colors ${
+                          user.active
+                            ? 'border-yellow-400 text-yellow-700 hover:bg-yellow-50'
+                            : 'border-green-300 text-green-600 hover:bg-green-50'
+                        }`}
+                        title={user.active ? 'Desativar usuário' : 'Ativar usuário'}
+                      >
+                        {user.active ? <UserX className="w-3 h-3" /> : <UserCheck className="w-3 h-3" />}
+                        {user.active ? 'Desativar' : 'Ativar'}
+                      </button>
+                      <button
+                        onClick={() => deleteUser(user)}
+                        disabled={deleting === user.id || toggling === user.id}
+                        className="flex items-center gap-1 text-xs px-2 py-1 rounded border border-red-300 text-red-600 hover:bg-red-50 transition-colors"
+                        title="Excluir usuário permanentemente"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        {deleting === user.id ? 'Excluindo...' : 'Excluir'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

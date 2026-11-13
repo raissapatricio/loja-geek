@@ -6,7 +6,7 @@ import {
   listProducts,
 } from '../controllers/product.controller';
 import { listAllOrders, updateOrderStatus } from '../controllers/order.controller';
-import { listUsers, toggleUserStatus } from '../controllers/user.controller';
+import { listUsers, toggleUserStatus, deleteUser } from '../controllers/user.controller';
 import { authenticate, requireAdmin } from '../middleware/auth.middleware';
 
 const router = Router();
@@ -27,6 +27,7 @@ router.patch('/orders/:id/status', updateOrderStatus);
 // Usuários
 router.get('/users', listUsers);
 router.patch('/users/:id/toggle', toggleUserStatus);
+router.delete('/users/:id', deleteUser);
 
 export default router;
 
