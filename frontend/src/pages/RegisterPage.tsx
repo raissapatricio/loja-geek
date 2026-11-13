@@ -122,7 +122,7 @@ export default function RegisterPage() {
     } catch (err: unknown) {
       const errorResponse = (err as { response?: { status?: number; data?: { error?: string } } })?.response;
 
-      let msg = 'Erro ao criar conta.';
+      let msg = 'Erro ao criar conta. Tente novamente.';
       if (errorResponse?.status === 409) {
         msg = 'Esta conta, e-mail ou CPF já existe cadastrado no sistema.';
       } else if (errorResponse?.data?.error) {
