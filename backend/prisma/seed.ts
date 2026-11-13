@@ -179,9 +179,9 @@ async function main() {
   const adminPassword = await bcrypt.hash('Admin@123456', 12);
   const admin = await prisma.user.create({
     data: {
-      name: 'Administrador SecureCommerce',
+      name: 'Administrador MangaVerse',
       cpf: '52998224725', // CPF válido fictício
-      email: 'admin@securecommerce.com',
+      email: 'admin@MangaVerse.com',
       phone: '(11) 99999-0001',
       passwordHash: adminPassword,
       role: 'ADMIN',
@@ -282,8 +282,8 @@ async function main() {
   console.log('\n✅ Seed concluído com sucesso!');
   console.log('='.repeat(50));
   console.log('📋 CREDENCIAIS DE ACESSO:');
-  console.log('  Admin:   admin@securecommerce.com / Admin@123456');
-  console.log('  Usuário: joao@teste.com / User@123456');
+  console.log('  Admin:   admin@mangaverse.com / Admin@123456');
+  console.log('  Usuário: raissa@teste.com / User@123456');
   console.log('='.repeat(50));
 }
 

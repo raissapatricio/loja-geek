@@ -120,9 +120,15 @@ export default function RegisterPage() {
       toast.success('Conta criada com sucesso!');
       navigate('/products');
     } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { error?: string } } })?.response?.data?.error ||
-        'Erro ao criar conta.';
+      const errorResponse = (err as { response?: { status?: number; data?: { error?: string } } })?.response;
+
+      let msg = 'Erro ao criar conta.';
+      if (errorResponse?.status === 409) {
+        msg = 'Esta conta, e-mail ou CPF já existe cadastrado no sistema.';
+      } else if (errorResponse?.data?.error) {
+        msg = errorResponse.data.error;
+      }
+
       setError(msg);
     } finally {
       setLoading(false);
@@ -300,4 +306,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-
