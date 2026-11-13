@@ -124,7 +124,7 @@ export default function LoginPage() {
           {/* Credenciais de demo */}
           <div className="mt-4 p-3 bg-indigo-50 rounded-lg">
             <p className="text-xs text-indigo-700 font-medium mb-1">🧪 Credenciais de demonstração:</p>
-            <p className="text-xs text-indigo-600">Admin: admin@securecommerce.com / Admin@123456</p>
+            <p className="text-xs text-indigo-600">Admin: admin@mangaverse.com / Admin@123456</p>
             <p className="text-xs text-indigo-600">User: joao@teste.com / User@123456</p>
           </div>
         </div>
