@@ -14,7 +14,7 @@ import { errorHandler } from './middleware/error.middleware';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3001;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 // ============================================================
@@ -88,8 +88,8 @@ app.use((req, res) => {
 // Error handler global
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-  console.log(`\n🚀 MangaVerse Backend rodando em http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`\n🚀 MangaVerse Backend rodando em http://0.0.0.0:${PORT}`);
   console.log(`📋 Ambiente: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🔒 CORS habilitado para: ${FRONTEND_URL}\n`);
 });
